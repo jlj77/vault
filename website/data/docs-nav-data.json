@@ -2170,6 +2170,10 @@
         "path": "upgrading/plugins"
       },
       {
+        "title": "Upgrade to 1.16.x",
+        "path": "upgrading/upgrade-to-1.16.x"
+      },
+      {
         "title": "Upgrade to 1.15.x",
         "path": "upgrading/upgrade-to-1.15.x"
       },
