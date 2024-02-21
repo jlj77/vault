@@ -1,19 +1,28 @@
-### Default Lease Count Quota enabled when upgrading from Vault versions before 1.9
+### Default lease count quota enabled when upgrading from Vault versions before 1.9
 
 #### Affected versions
 
-- 1.16.0+
+- 1.16+
 
 #### Issue
 
-Default Lease Count Quotas are enabled for new clusters by consulting Vault's
-past versions.
+Default lease count quotas are enabled in v1.16+ for new installs by consulting
+the version store.
 
-However, the version store was introduced in 1.9. As a result, upgrading from a
-version prior to 1.9 enables the Default Lease Count Quota.
+Before version 1.9, Vault did not maintain version history. As a result,
+upgrading from a version prior to 1.9 automatically enables a default lease
+count quota.
 
-You can query the quota via the `/sys/quotas/lease-count/default` endpoint, and
-modify or delete it as appropriate:
+A workaround for this issue is to perform the upgrade in two steps:
+
+1. Upgrade to any Vault version prior to 1.16 (i.e. 1.9 - 1.15) to populate the
+   version store.
+2. Upgrade to Vault version 1.16+ without the default lease
+   count quota.
+
+You can review, modify, and delete the global default quota via the
+[`/sys/quotas/lease-count/default`](vault/api-docs/system/lease-count-quotas)
+endpoint:
 
 ```shell-session
 $ vault read sys/quotas/lease-count/default
@@ -23,4 +32,4 @@ $ vault write sys/quotas/lease-count/default max_leases=<# of max leases>
 
 Refer to [Protecting Vault with Resource
 Quotas](/vault/tutorials/operations/resource-quotas) for a step-by-step tutorial
-on proper quota tuning.
+on quota tuning.
