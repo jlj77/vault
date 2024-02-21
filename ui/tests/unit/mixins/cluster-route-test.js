@@ -21,7 +21,12 @@ import sinon from 'sinon';
 module('Unit | Mixin | cluster route', function () {
   function createClusterRoute(
     clusterModel = {},
-    methods = { router: {}, hasKeyData: () => false, authToken: () => null, transitionTo: () => {} }
+    methods = {
+      router: { transitionTo: () => {} },
+      hasKeyData: () => false,
+      authToken: () => null,
+      transitionTo: () => {},
+    }
   ) {
     const ClusterRouteObject = EmberObject.extend(
       ClusterRouteMixin,
@@ -133,7 +138,7 @@ module('Unit | Mixin | cluster route', function () {
     const redirectRouteURL = '/vault/secrets/secret/create';
     const subject = createClusterRoute({ needsInit: false, sealed: false });
     subject.router.currentURL = redirectRouteURL;
-    const spy = sinon.spy(subject, 'transitionTo');
+    const spy = sinon.spy(subject.router, 'transitionTo');
     subject.transitionToTargetRoute();
     assert.ok(
       spy.calledWithExactly(AUTH, { queryParams: { redirect_to: redirectRouteURL } }),
@@ -154,7 +159,7 @@ module('Unit | Mixin | cluster route', function () {
 
   test('#transitionToTargetRoute with auth target, coming from cluster route', function (assert) {
     const subject = createClusterRoute({ needsInit: false, sealed: false });
-    const spy = sinon.spy(subject, 'transitionTo');
+    const spy = sinon.spy(subject.router, 'transitionTo');
     subject.transitionToTargetRoute({ targetName: CLUSTER_INDEX });
     assert.ok(spy.calledWithExactly(AUTH), 'calls transitionTo without redirect_to');
     spy.restore();
